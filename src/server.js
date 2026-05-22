@@ -1,13 +1,52 @@
 import express from 'express';
+import cors from 'cors';
+import pino from 'pino-http';
 import 'dotenv/config';
 
-const app = express();
+const app = express(); // утворюємо  Express-додатокr
 
-const PORT = process.env.PORT ?? 3000;
+const PORT = process.env.PORT ?? 3000; // визначаємо порт, на якому буде працювати сервер
 
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Server is running',
+app.use(express.json()); // вбудований middleware для парсингу JSON-тіла запитів
+
+app.use(cors()); // додаємо middleware для дозволу CORS
+
+app.use(
+  // додаємо middleware для логування HTTP-запитів
+  pino({
+    level: 'info',
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        translateTime: 'HH:MM:ss',
+        ignore: 'pid,hostname',
+        messageFormat:
+          '{req.method} {req.url} {res.statusCode} - {responseTime}ms',
+        hideObject: true,
+      },
+    },
+  }),
+);
+
+// Визначаємо маршрути для обробки запитів
+app.get('/notes', (req, res) => {
+  res.status(200).json({
+    message: 'Retrieved all notes',
+  });
+});
+
+app.get('/notes/:notesId', (req, res) => {
+  const { notesId } = req.params;
+  res.status(200).json({
+    message: `Retrieved note with ID: ${notesId}`,
+  });
+});
+
+// Обробник для невизначених маршрутів (404 Not Found)
+app.use((req, res) => {
+  res.status(404).json({
+    message: 'Not found',
   });
 });
 
