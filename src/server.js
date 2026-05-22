@@ -43,10 +43,23 @@ app.get('/notes/:notesId', (req, res) => {
   });
 });
 
+// Додатковий маршрут для тестування обробки помилок
+app.get('/test-error', () => {
+  throw new Error('Simulated server error');
+});
+
 // Обробник для невизначених маршрутів (404 Not Found)
 app.use((req, res) => {
   res.status(404).json({
     message: 'Not found',
+  });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  res.status(500).json({
+    message: err.message,
   });
 });
 
