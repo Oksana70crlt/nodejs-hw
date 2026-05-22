@@ -51,7 +51,7 @@ app.get('/test-error', () => {
 // Обробник для невизначених маршрутів (404 Not Found)
 app.use((req, res) => {
   res.status(404).json({
-    message: 'Not found',
+    message: 'Route not found',
   });
 });
 
