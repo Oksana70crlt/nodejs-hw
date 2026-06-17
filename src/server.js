@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
+import { errors } from 'celebrate';
 
 import { connectMongoDB } from './db/connectMongoDB.js';
 import { logger } from './middleware/logger.js';
@@ -18,6 +19,7 @@ app.use(cors()); // додаємо middleware для дозволу CORS
 
 app.use(notesRoutes); // підключаємо маршрути для нотаток
 app.use(notFoundHandler); // middleware для обробки невідомих маршрутів
+app.use(errors()); // middleware для обробки помилок валідації від celebrate
 app.use(errorHandler); // middleware для обробки помилок
 
 // Підключаємося до MongoDB
