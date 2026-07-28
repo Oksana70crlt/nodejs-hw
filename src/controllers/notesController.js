@@ -8,7 +8,9 @@ export const getAllNotes = async (req, res, next) => {
 
   const skip = (page - 1) * perPage;
 
-  const filter = {}; // базовий фільтр для пошуку нотаток, якщо не вказано тег або пошуковий запит, він пустий і поверне всі нотатки
+  const filter = {
+    userId: req.user._id, // фільтр за userId, щоб отримати лише нотатки поточного користувача
+  };
 
   if (tag) {
     filter.tag = tag;
@@ -39,7 +41,11 @@ export const getAllNotes = async (req, res, next) => {
 
 export const getNoteById = async (req, res, next) => {
   const { noteId } = req.params;
-  const note = await Note.findById(noteId);
+
+  const note = await Note.findById({
+    _id: noteId,
+    userId: req.user._id, // фільтр за userId, щоб отримати лише нотатку поточного користувача}
+  });
 
   if (!note) {
     throw createHttpError(404, 'Note not found');
@@ -49,7 +55,10 @@ export const getNoteById = async (req, res, next) => {
 };
 
 export const createNote = async (req, res) => {
-  const note = await Note.create(req.body);
+  const note = await Note.create({
+    ...req.body,
+    userId: req.user._id, // Додаємо userId до створюваної нотатки
+  });
 
   res.status(201).json(note);
 };
@@ -57,9 +66,16 @@ export const createNote = async (req, res) => {
 export const updateNote = async (req, res) => {
   const { noteId } = req.params;
 
-  const note = await Note.findOneAndUpdate({ _id: noteId }, req.body, {
-    returnDocument: 'after',
-  });
+  const note = await Note.findOneAndUpdate(
+    {
+      _id: noteId,
+      userId: req.user._id,
+    }, // Фільтр за userId, щоб оновити лише нотатку поточного користувача
+    req.body,
+    {
+      returnDocument: 'after',
+    },
+  );
 
   if (!note) {
     throw createHttpError(404, 'Note not found');
@@ -71,7 +87,10 @@ export const updateNote = async (req, res) => {
 export const deleteNote = async (req, res) => {
   const { noteId } = req.params;
 
-  const note = await Note.findOneAndDelete({ _id: noteId });
+  const note = await Note.findOneAndDelete({
+    _id: noteId,
+    userId: req.user._id,
+  }); // Фільтр за userId, щоб видалити лише нотатку поточного користувача
 
   if (!note) {
     throw createHttpError(404, 'Note not found');
