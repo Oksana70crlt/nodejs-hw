@@ -42,7 +42,7 @@ export const getAllNotes = async (req, res, next) => {
 export const getNoteById = async (req, res, next) => {
   const { noteId } = req.params;
 
-  const note = await Note.findById({
+  const note = await Note.findOne({
     _id: noteId,
     userId: req.user._id, // фільтр за userId, щоб отримати лише нотатку поточного користувача}
   });

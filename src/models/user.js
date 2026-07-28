@@ -11,6 +11,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true, //email повинен бути унікальним для кожного користувача
+      trim: true,
     },
     password: {
       type: String,
@@ -33,7 +34,7 @@ userSchema.pre('save', function () {
 });
 
 // перед поверненням об'єкта користувача видаляємо поле password, щоб не передавати його клієнту
-userSchema.method.toJSON = function () {
+userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password; // видаляємо поле password з об'єкта користувача перед поверненням
   return obj;

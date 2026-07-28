@@ -1,6 +1,6 @@
 import { User } from '../models/user.js';
 import createHttpError from 'http-errors';
-import brcypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { createSession, setSessionCookies } from '../services/auth.js';
 import { Session } from '../models/session.js';
 
@@ -16,7 +16,7 @@ export const registerUser = async (req, res) => {
   }
 
   // Хешуємо пароль користувача перед збереженням у базі даних
-  const hashedPassword = await brcypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   // Створюємо нового користувача у базі даних
   const user = await User.create({
@@ -45,7 +45,7 @@ export const loginUser = async (req, res) => {
   }
 
   // Перевіряємо, чи введений пароль відповідає збереженому хешованому паролю
-  const isPasswordValid = await brcypt.compare(password, user.password);
+  const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
     throw createHttpError(401, 'Invalid credentials');
