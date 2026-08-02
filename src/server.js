@@ -10,6 +10,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import notesRoutes from './routes/notesRoutes.js';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 const app = express(); // утворюємо  Express-додатокr
 
@@ -22,6 +23,7 @@ app.use(cors()); // додаємо middleware для дозволу CORS
 
 app.use(authRoutes); // підключаємо маршрути для аутентифікації
 app.use(notesRoutes); // підключаємо маршрути для нотаток
+app.use(userRoutes); // підключаємо маршрути для користувачів
 
 app.use(notFoundHandler); // middleware для обробки невідомих маршрутів
 app.use(errors()); // middleware для обробки помилок валідації від celebrate

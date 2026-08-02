@@ -15,3 +15,18 @@ export const loginUserSchema = {
     password: Joi.string().required(),
   }).required(),
 };
+
+// Валідація даних для запиту на скидання пароля
+export const requestResetEmailSchema = {
+  [Segments.BODY]: Joi.object({
+    email: Joi.string().email().required(),
+  }),
+};
+
+// Валідація даних для скидання пароля
+export const resetPasswordSchema = {
+  [Segments.BODY]: Joi.object({
+    password: Joi.string().min(8).required(), // новий пароль користувача (мінімум 8 символів)
+    token: Joi.string().required(), // token — підписаний JWT, який ми надіслали в листі (дійсний упродовж 15 хв).
+  }),
+};
